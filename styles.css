@@ -24,3 +24,21 @@ body > * > button {
     font-family: "IBM Plex Mono", monospace;
     font-size: 1rem;
 }
+
+.selected {
+    background: hsl(283.7, 100%, 90.6%) !important;
+}
+
+#board > button {
+    border: 1px dashed hsl(120, 28%, 60.8%);
+    padding: 16px 32px;
+    font-size: 0.8rem;
+}
+
+#submit {
+    background: hsl(133.5, 100%, 93.9%);
+}
+
+#cancel {
+    background: hsl(349.1, 100%, 95.7%);
+}

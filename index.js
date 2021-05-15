@@ -1,9 +1,16 @@
 "use strict";
+var __spreadArray = (this && this.__spreadArray) || function (to, from) {
+    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
+        to[j] = from[i];
+    return to;
+};
 var letters = "AAAAAAAAAAAAABBBCCCDDDDDDEEEEEEEEEEEEEEEEEEFFFGGGGHHHIIIIIIIIIIIIJJKKLLLLLMMMNNNNNNNNOOOOOOOOOOOPPPQQRRRRRRRRRSSSSSSTTTTTTTTTUUUUUUVVVWWWXXYYYZZ";
 var gridSize = 12;
 var state = {
-    points: 0,
+    score: 0,
     word: "",
+    locations: [],
+    playedWords: [],
 };
 function randomInt(max) {
     return Math.floor(Math.random() * max);
@@ -51,19 +58,33 @@ function createButtonOnClick(button) {
     return function () {
         var event = {
             letter: button.value,
+            button: button,
             coordinates: coordinatesFromId(button.id),
         };
         handleChooseLetterMessage(event);
     };
 }
 function handleChooseLetterMessage(event) {
+    var lastLocation = state.locations[state.locations.length - 1];
+    // User clicked the button they clicked before - this should 'undo' the last
+    // move
+    if (lastLocation &&
+        event.coordinates.x === lastLocation.x &&
+        event.coordinates.y === lastLocation.y) {
+        state.word = state.word.slice(0, -1);
+        state.locations.pop();
+        updateBoard();
+        event.button.classList.remove("selected");
+        return;
+    }
     state.word = state.word + event.letter;
-    state.lastPlayedCoord = event.coordinates;
+    state.locations.push(event.coordinates);
+    event.button.classList.add("selected");
     updateBoard();
 }
 function updateBoard() {
     console.log(state);
-    console.log(state.lastPlayedCoord);
+    console.log(state.locations);
     var container = document.getElementById("container");
     if (!container) {
         console.error("element with ID 'container' not found");
@@ -72,13 +93,14 @@ function updateBoard() {
     for (var x = 0; x < gridSize; x++) {
         for (var y = 0; y < gridSize; y++) {
             var button = document.getElementById(x + "," + y);
-            if (!state.lastPlayedCoord) {
+            // Remove any tile statuses
+            if (state.locations.length === 0) {
                 button.disabled = false;
+                button.classList.remove("selected");
+                continue;
             }
-            else {
-                var coord = { x: x, y: y };
-                button.disabled = buttonDisabled(coord, state.lastPlayedCoord, state.word.length);
-            }
+            var coord = { x: x, y: y };
+            button.disabled = buttonDisabled(coord, state.locations, state.word.length);
         }
     }
     var word = document.getElementById("word");
@@ -86,36 +108,50 @@ function updateBoard() {
         console.error("element with ID 'word' not found");
         return;
     }
-    word.innerHTML = state.word.padEnd(20, "_");
-    var points = document.getElementById("points");
-    if (points) {
-        points.innerHTML = "Points: " + state.points;
+    word.innerHTML = state.word.padEnd(30, "_");
+    var score = document.getElementById("score");
+    if (score) {
+        score.innerHTML = "Score: " + state.score;
     }
 }
-function buttonDisabled(coord, lastPlayedCoord, wordLength) {
-    if (coord.x === lastPlayedCoord.x && coord.y === lastPlayedCoord.y) {
-        return true;
+function buttonDisabled(coord, locations, wordLength) {
+    var clonedLocations = __spreadArray([], locations);
+    var lastLocation = clonedLocations.pop();
+    if (!lastLocation) {
+        console.error("buttonDisabled: locations has length 0");
+        return false;
     }
-    var xDist = Math.abs(lastPlayedCoord.x - coord.x);
-    var yDist = Math.abs(lastPlayedCoord.y - coord.y);
+    // Previous locations (but not the last) are disabled
+    for (var _i = 0, clonedLocations_1 = clonedLocations; _i < clonedLocations_1.length; _i++) {
+        var p = clonedLocations_1[_i];
+        if (p.x === coord.x && p.y === coord.y) {
+            return true;
+        }
+    }
+    var xDist = Math.abs(lastLocation.x - coord.x);
+    var yDist = Math.abs(lastLocation.y - coord.y);
     /* return xDist > wordLength || yDist > wordLength */
     return xDist + yDist > wordLength;
 }
 function submitOnClick() {
-    // TODO: validate word
-    console.log("submitting");
-    if (!wordlist.includes(state.word.toLowerCase())) {
+    var word = state.word.toLowerCase();
+    if (!wordlist.includes(word)) {
         console.error("word not found");
         return;
     }
-    state.points = state.points += state.word.length * state.word.length;
+    if (state.playedWords.includes(word)) {
+        console.error("word already played");
+        return;
+    }
+    state.score = state.score += state.word.length * state.word.length;
     state.word = "";
-    state.lastPlayedCoord = undefined;
+    state.playedWords.push(word);
+    state.locations = [];
     updateBoard();
 }
 function cancelOnClick() {
     state.word = "";
-    state.lastPlayedCoord = undefined;
+    state.locations = [];
     updateBoard();
 }
 initialiseBoard();
