@@ -21,7 +21,7 @@ interface Point {
 const letters =
   "AAAAAAAAAAAAABBBCCCDDDDDDEEEEEEEEEEEEEEEEEEFFFGGGGHHHIIIIIIIIIIIIJJKKLLLLLMMMNNNNNNNNOOOOOOOOOOOPPPQQRRRRRRRRRSSSSSSTTTTTTTTTUUUUUUVVVWWWXXYYYZZ";
 
-const gridSize = 12;
+const gridSize = 8;
 
 let state: State = {
   score: 0,
@@ -187,10 +187,22 @@ function submitOnClick() {
     console.error("word already played");
     return;
   }
-  state.score = state.score += state.word.length * state.word.length;
+  const points = state.word.length * state.word.length;
+  state.score = state.score += points;
   state.word = "";
   state.playedWords.push(word);
   state.locations = [];
+
+  // Flash score change
+  const scoreChange = document.getElementById("scoreChange");
+  if (scoreChange) {
+    scoreChange.innerHTML = `+${points}`;
+    scoreChange.className = "show";
+    setTimeout(function () {
+      scoreChange.className = scoreChange.className.replace("show", "");
+    }, 3000);
+  }
+
   updateBoard();
 }
 

@@ -13,8 +13,10 @@ body > * > button {
 
 #container {
     display: grid;
-    grid-template-columns: 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px;
-    grid-template-rows: 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px;
+    /* grid-template-columns: 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px; */
+    /* grid-template-rows: 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px; */
+    grid-template-columns: 50px 50px 50px 50px 50px 50px 50px 50px;
+    grid-template-rows: 50px 50px 50px 50px 50px 50px 50px 50px;
 }
 
 #container > button {
@@ -41,4 +43,64 @@ body > * > button {
 
 #cancel {
     background: hsl(349.1, 100%, 95.7%);
+}
+
+button:hover:enabled {
+    transform: translate(-1px, -1px);
+    filter: drop-shadow(2px 2px 2px hsl(0, 0%, 70%));
+}
+
+#scoreChange {
+    visibility: hidden;
+    color: forestgreen;
+}
+
+#scoreChange.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@-webkit-keyframes fadein {
+    from {
+        bottom: 0;
+        opacity: 0;
+    }
+    to {
+        bottom: 30px;
+        opacity: 1;
+    }
+}
+
+@keyframes fadein {
+    from {
+        bottom: 0;
+        opacity: 0;
+    }
+    to {
+        bottom: 30px;
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes fadeout {
+    from {
+        bottom: 30px;
+        opacity: 1;
+    }
+    to {
+        bottom: 0;
+        opacity: 0;
+    }
+}
+
+@keyframes fadeout {
+    from {
+        bottom: 30px;
+        opacity: 1;
+    }
+    to {
+        bottom: 0;
+        opacity: 0;
+    }
 }

@@ -5,7 +5,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from) {
     return to;
 };
 var letters = "AAAAAAAAAAAAABBBCCCDDDDDDEEEEEEEEEEEEEEEEEEFFFGGGGHHHIIIIIIIIIIIIJJKKLLLLLMMMNNNNNNNNOOOOOOOOOOOPPPQQRRRRRRRRRSSSSSSTTTTTTTTTUUUUUUVVVWWWXXYYYZZ";
-var gridSize = 12;
+var gridSize = 8;
 var state = {
     score: 0,
     word: "",
@@ -143,10 +143,20 @@ function submitOnClick() {
         console.error("word already played");
         return;
     }
-    state.score = state.score += state.word.length * state.word.length;
+    var points = state.word.length * state.word.length;
+    state.score = state.score += points;
     state.word = "";
     state.playedWords.push(word);
     state.locations = [];
+    // Flash score change
+    var scoreChange = document.getElementById("scoreChange");
+    if (scoreChange) {
+        scoreChange.innerHTML = "+" + points;
+        scoreChange.className = "show";
+        setTimeout(function () {
+            scoreChange.className = scoreChange.className.replace("show", "");
+        }, 3000);
+    }
     updateBoard();
 }
 function cancelOnClick() {
