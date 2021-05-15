@@ -1,0 +1,44 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital@1&display=swap");
+
+body {
+    font-family: "IBM Plex Mono", monospace;
+    background: hsl(56.3, 100%, 93.7%);
+    display: flex;
+    justify-content: center;
+}
+
+body > * > button {
+    font-family: "IBM Plex Mono", monospace;
+}
+
+#container {
+    display: grid;
+    grid-template-columns: 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px;
+    grid-template-rows: 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px;
+}
+
+#container > button {
+    background: #fff;
+    border: 1px dashed hsl(120, 28%, 60.8%);
+    margin: 4px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 1rem;
+}
+
+.selected {
+    background: hsl(283.7, 100%, 90.6%) !important;
+}
+
+#board > button {
+    border: 1px dashed hsl(120, 28%, 60.8%);
+    padding: 16px 32px;
+    font-size: 0.8rem;
+}
+
+#submit {
+    background: hsl(133.5, 100%, 93.9%);
+}
+
+#cancel {
+    background: hsl(349.1, 100%, 95.7%);
+}
