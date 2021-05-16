@@ -3,6 +3,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <!-- <meta name="viewport" content="width=480px, initial-scale=1" /> -->
 
     <title>Word game</title>
     <link rel="stylesheet" href="styles.css" />
@@ -10,11 +11,22 @@
 
   <body>
     <div id="board">
-      <p><span id="score"></span> <span id="scoreChange"></span></p>
+      <p>
+        <span id="score"></span> <span id="scoreChange"></span>
+        <span id="errorMsg"></span>
+      </p>
+      <progress id="progressBar" value="0" max="50"></progress>
       <div id="container"></div>
       <p id="word"></p>
       <button type="button" id="cancel">Reset</button>
       <button type="button" id="submit">Submit</button>
+      <footer>
+        <p>Built by <a href="https://routley.io">James Routley</a></p>
+        <p>
+          Source code on
+          <a href="https://github.com/jamesroutley/word-bee">GitHub</a>
+        </p>
+      </footer>
     </div>
     <script src="index.js"></script>
     <script src="words.js"></script>

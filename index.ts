@@ -3,6 +3,7 @@ interface State {
   word: string;
   locations: Point[];
   playedWords: string[];
+  scoreTargetIndex: number;
 }
 
 interface ChooseLetterMessage {
@@ -21,6 +22,8 @@ interface Point {
 const letters =
   "AAAAAAAAAAAAABBBCCCDDDDDDEEEEEEEEEEEEEEEEEEFFFGGGGHHHIIIIIIIIIIIIJJKKLLLLLMMMNNNNNNNNOOOOOOOOOOOPPPQQRRRRRRRRRSSSSSSTTTTTTTTTUUUUUUVVVWWWXXYYYZZ";
 
+const scoreTargets = [50, 100, 200, 400, 800, 1600, 3200, 6400, 12800];
+
 const gridSize = 8;
 
 let state: State = {
@@ -28,6 +31,7 @@ let state: State = {
   word: "",
   locations: [],
   playedWords: [],
+  scoreTargetIndex: 0,
 };
 
 function randomInt(max: number) {
@@ -111,8 +115,6 @@ function handleChooseLetterMessage(event: ChooseLetterMessage) {
 }
 
 function updateBoard() {
-  console.log(state);
-  console.log(state.locations);
   const container = document.getElementById("container");
   if (!container) {
     console.error("element with ID 'container' not found");
@@ -130,11 +132,14 @@ function updateBoard() {
       }
 
       const coord = { x, y };
-      button.disabled = buttonDisabled(
+      const disabled = buttonDisabled(
         coord,
         state.locations,
         state.word.length
       );
+      if (button.disabled !== disabled) {
+        button.disabled = disabled;
+      }
     }
   }
 
@@ -180,18 +185,30 @@ function buttonDisabled(
 function submitOnClick() {
   const word = state.word.toLowerCase();
   if (!wordlist.includes(word)) {
-    console.error("word not found");
+    flashError("Invalid word!");
     return;
   }
   if (state.playedWords.includes(word)) {
-    console.error("word already played");
+    flashError("Word already played!");
     return;
   }
-  const points = state.word.length * state.word.length;
+  const points = calculatePoints(state.word);
   state.score = state.score += points;
   state.word = "";
   state.playedWords.push(word);
   state.locations = [];
+
+  // Update progress bar
+  const progressBar = document.getElementById(
+    "progressBar"
+  ) as HTMLProgressElement;
+  if (progressBar) {
+    if (state.score >= scoreTargets[state.scoreTargetIndex]) {
+      state.scoreTargetIndex++;
+      progressBar.max = scoreTargets[state.scoreTargetIndex];
+    }
+    progressBar.value = state.score;
+  }
 
   // Flash score change
   const scoreChange = document.getElementById("scoreChange");
@@ -204,6 +221,36 @@ function submitOnClick() {
   }
 
   updateBoard();
+}
+
+function flashError(msg: string) {
+  // Hack - the score change is hidden, but can shift our error message span
+  // over to the right if it has contents. Remove them.
+  const scoreChange = document.getElementById("scoreChange");
+  if (scoreChange) {
+    scoreChange.innerHTML = "";
+  }
+
+  const errorMsg = document.getElementById("errorMsg");
+  if (errorMsg) {
+    errorMsg.innerHTML = msg;
+    errorMsg.className = "show";
+    setTimeout(function () {
+      errorMsg.className = errorMsg.className.replace("show", "");
+    }, 3000);
+  }
+}
+
+function calculatePoints(word: string): number {
+  /* return state.word.length * state.word.length; */
+  const len = word.length;
+  if (len <= 4) {
+    return 1;
+  }
+  if (len <= 6) {
+    return len;
+  }
+  return 2 * len;
 }
 
 function cancelOnClick() {

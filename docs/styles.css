@@ -50,12 +50,27 @@ button:hover:enabled {
     filter: drop-shadow(2px 2px 2px hsl(0, 0%, 70%));
 }
 
+#score {
+    margin-right: 16px;
+}
+
 #scoreChange {
     visibility: hidden;
     color: forestgreen;
 }
 
 #scoreChange.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+#errorMsg {
+    visibility: hidden;
+    color: red;
+}
+
+#errorMsg.show {
     visibility: visible;
     -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
     animation: fadein 0.5s, fadeout 0.5s 2.5s;
@@ -103,4 +118,15 @@ button:hover:enabled {
         bottom: 0;
         opacity: 0;
     }
+}
+
+progress {
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+footer {
+    margin-top: 64px;
+    font-size: 0.8rem;
+    color: #737373;
 }
